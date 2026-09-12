@@ -9,7 +9,7 @@ typedef struct {
 }sequential_stack_t;
 
 sequential_stack_t *stack_init(int capacity){ //como você cria o stack aqui, ele recebe a struct como tipo da função, dessa forma ele sobrevive após a execução
-    if (capacity <= 0){
+    if (capacity <= 0){ // O(1)
         return NULL;
     }
     sequential_stack_t *S = malloc (sizeof(sequential_stack_t));
@@ -27,7 +27,7 @@ sequential_stack_t *stack_init(int capacity){ //como você cria o stack aqui, el
 }
 
 int stack_push(sequential_stack_t *S, int value){ //adicionar elemento ao stack, recebe o struct e o elemento que quer ser adicionado
-    if(S==NULL){
+    if(S==NULL){ //O(1)
         return 1;
     }
     if(S->top == S->capacity){ //como todo push adiciona 1 no top, quando capacity e top forem iguais não tem mais espaço no heap
@@ -39,7 +39,7 @@ int stack_push(sequential_stack_t *S, int value){ //adicionar elemento ao stack,
 }
 
 int stack_pop(sequential_stack_t *S, int *value){ //int value aqui não é essencial, mas é adicionado para que o pop retorne o valor que foi removido para a chamada
-    if(S==NULL || S->top == 0){
+    if(S==NULL || S->top == 0){//O(1)
         return 1;
     }
     if(value == NULL){
@@ -51,20 +51,20 @@ int stack_pop(sequential_stack_t *S, int *value){ //int value aqui não é essen
 }
 
 int stack_is_empty(sequential_stack_t *S){
-    if (S == NULL){
+    if (S == NULL){//O(1)
         return 0;
     }
-    return S->top = 0; //basicamente zera o stack, tendo em vista que vai voltar pro inicio e vai reescrever cada chamada de push
+    return S->top == 0; //compara, se o top for 0 retorna 0 se o top for diferente disso retorna 1, basicamente um bool para dizer se esta vazio ou n
 }
 
 int stack_size(sequential_stack_t *S){
-    if(S==NULL){
+    if(S==NULL){//O(1)
         return 0;
     }
     return S->top;
 }
 void stack_destroy(sequential_stack_t *S){
-    if(S == NULL){
+    if(S == NULL){//O(1)
         return;
     }
     free(S->data);
