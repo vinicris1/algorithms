@@ -84,6 +84,23 @@ int size_queue(void_queue_t *Q){
     return Q->size;
 }
 
+int print_queue(void_queue_t *Q){
+    if(Q==NULL || is_empty_queue(Q) == 1){
+        return 1;
+    }
+    int aux = Q->begin;
+    for(int i = 0; i<Q->size; i++){
+        aux = Q->begin + i;
+        if(Q->begin + i > Q->capacity-1){
+            aux = aux % Q->capacity; // quando o begin + i for 5 ele vai pegar o quanto sobra de 5/4, depois 6/4 que vai dar os indices baixos
+        }
+        void *src = (char *) Q->data + aux * Q->data_size;
+        printf("%d\n", *(int *)src);
+    }
+
+    return 0;
+}
+
 void destroy_queue(void_queue_t *Q){
     if(Q==NULL){
         return;
@@ -95,49 +112,41 @@ void destroy_queue(void_queue_t *Q){
 int main(){
     void_queue_t *Q = queue_init(4, sizeof(int));
 
-    // teste 1: fila vazia deve retornar is_empty = 1
     printf("vazia? %d (esperado: 1)\n", is_empty_queue(Q));
 
-    // teste 2: enqueue de 3 valores
     int a = 10, b = 20, c = 30;
     enqueue_queue(Q, &a);
     enqueue_queue(Q, &b);
     enqueue_queue(Q, &c);
-    printf("size apos 3 enqueues: %d (esperado: 3)\n", size_queue(Q));
-    printf("vazia? %d (esperado: 0)\n", is_empty_queue(Q));
 
-    // teste 3: dequeue deve devolver na ordem certa (FIFO): 10, depois 20
     int out;
     dequeue_queue(Q, &out);
-    printf("dequeue 1: %d (esperado: 10)\n", out);
     dequeue_queue(Q, &out);
-    printf("dequeue 2: %d (esperado: 20)\n", out);
-    printf("size apos 2 dequeues: %d (esperado: 1)\n", size_queue(Q));
 
     // teste 4: testar o wraparound circular
     // agora size=1 (só o 30 dentro), capacity=4, ainda cabem 3
-    int d = 40, e = 50, f = 60;
+    int d = 40, e = 50, f = 60, h = 70;
     enqueue_queue(Q, &d);
     enqueue_queue(Q, &e);
     enqueue_queue(Q, &f); // esse enqueue faz o 'end' dar a volta (wraparound)
-    printf("size apos encher de novo: %d (esperado: 4)\n", size_queue(Q));
 
     // teste 5: fila cheia deve recusar novo enqueue
     int g = 70;
     int resultado = enqueue_queue(Q, &g);
     printf("enqueue em fila cheia retornou: %d (esperado: 1, ou seja, erro)\n", resultado);
 
-    // teste 6: esvaziar tudo e conferir ordem: 30, 40, 50, 60
+    print_queue(Q);
+
+    //esvaziar fila
     while(!is_empty_queue(Q)){
         dequeue_queue(Q, &out);
-        printf("dequeue: %d\n", out);
+        //printf("dequeue: %d\n", out);
     }
     printf("size final: %d (esperado: 0)\n", size_queue(Q));
 
-    // teste 7: dequeue em fila vazia deve falhar
     resultado = dequeue_queue(Q, &out);
     printf("dequeue em fila vazia retornou: %d (esperado: 1, ou seja, erro)\n", resultado);
-
+    
     destroy_queue(Q);
     return 0;
 }

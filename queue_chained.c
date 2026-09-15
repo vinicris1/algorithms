@@ -78,6 +78,19 @@ int queue_size(queue_t *Q){
     return Q->count;
 }
 
+int print_queue(queue_t *Q){
+    if(Q == NULL){
+        return 1;
+    }
+    node_queue_t *N = Q->begin;
+    printf("%d\n",N->data);
+    while(N != NULL){
+        N = N->next;
+        printf("%d\n",N->data);
+    }
+    return 0;
+}
+
 void queue_destroy(queue_t *Q){
     if(Q == NULL){
         return;
@@ -105,6 +118,13 @@ int main(){
 
     int a = queue_size(Q);
     printf("%d\n", a);
+
+    queue_add(Q, 40);
+    queue_add(Q, 50);
+
+    queue_remove(Q, p);
+
+    print_queue(Q);
 
     queue_destroy(Q);
 
