@@ -54,6 +54,7 @@ int push_end_deque(deque_double_t *D, int value){
     }
     if(D->end == NULL){
         N->front=NULL;
+        D->begin = N;
     }else{
         N->front = D->end;
         D->end->back = N; //do the old end to point to the new end
@@ -62,6 +63,43 @@ int push_end_deque(deque_double_t *D, int value){
     N->back = NULL;
     D->end = N;
     D->count++;
+    return 0;
+}
+
+int pull_begin_deque (deque_double_t *D, int *value){
+    if(D==NULL || value == NULL){
+        return 1;
+    }
+    node_deque_t *N = D->begin;
+    *value = N->data;
+    if(N->back == NULL){
+        D->begin = NULL;
+        D->end = NULL;
+    }else{
+        D->begin = N->back;
+        D->begin->front = NULL;
+    }
+    D->count--;
+    free(N);
+    return 0;
+}
+
+int pull_end_deque (deque_double_t *D, int *value){
+    if(D==NULL || value == NULL){
+        return 1;
+    }
+    node_deque_t *N = D->end;
+    *value = N->data;
+    if(N->front == NULL){
+        D->end = NULL;
+        D->begin = NULL;
+    }else{
+        D->end = N->front;
+        D->end->back = NULL;
+    }
+
+    D->count--;
+    free(N);
     return 0;
 }
 
@@ -79,6 +117,32 @@ int print_deque(deque_double_t *D){
     return 0;
 }
 
+int deque_is_empty(deque_double_t *D){
+    if(D == NULL){
+        return 0;
+    }
+    return D->begin == NULL;
+}
+
+int deque_size(deque_double_t *D){
+    if(D == NULL){
+        return 0;
+    }
+    return D->count;
+}
+
+void deque_destroy(deque_double_t *D){
+    if(D == NULL){
+        return;
+    }
+    while(D->end != NULL){
+        node_deque_t *current = D->end;
+        D->end = current->front;
+        free(current);
+    }
+    free(D);
+}
+
 int main(){
     deque_double_t *D = deque_init();
     push_begin_deque(D, 25);
@@ -86,6 +150,19 @@ int main(){
     push_begin_deque(D, 50);
 
     print_deque(D);
+
+    int out = 0;
+    int *p = &out;
+    
+    pull_begin_deque(D, p);
+    printf("------\n");
+    print_deque(D);
+
+    pull_end_deque(D, p);
+    printf("------\n");
+    print_deque(D);
+    
+    deque_destroy(D);
 
     return 0;
 }
